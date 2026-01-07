@@ -11,6 +11,8 @@ servers:
 tags:
   - name: Customers
     description: Customer management operations
+  - name: Accounts
+    description: Bank account management
 
 paths:
   /api/v1/customers:
@@ -127,6 +129,120 @@ paths:
         '204':
           description: Customer deleted successfully
 
+  /api/v1/customers/{customerId}/accounts:
+    post:
+      summary: Create a new account for a customer
+      operationId: createAccount
+      tags: [Accounts]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: Get all accounts for a customer
+      operationId: getAccountsByCustomer
+      tags: [Accounts]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountResponse'
+
+  /api/v1/accounts/{accountId}:
+    get:
+      summary: Get account by ID
+      operationId: getAccountById
+      tags: [Accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Account found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update account status
+      operationId: updateAccount
+      tags: [Accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+      responses:
+        '200':
+          description: Account updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+
+    delete:
+      summary: Close account
+      operationId: deleteAccount
+      tags: [Accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Account closed successfully
+
 components:
   schemas:
     CustomerRequest:
@@ -183,15 +299,63 @@ components:
         status:
           type: boolean
 
+    AccountRequest:
+      type: object
+      required:
+        - accountType
+        - initialBalance
+      properties:
+        accountType:
+          type: string
+          enum: [SAVINGS, CHECKING]
+          example: SAVINGS
+        initialBalance:
+          type: number
+          format: double
+          minimum: 0
+          example: 1000.00
+
+    AccountUpdateRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: boolean
+          example: true
+
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "a123"
+        customerId:
+          type: string
+          example: "c123"
+        accountType:
+          type: string
+          example: SAVINGS
+        balance:
+          type: number
+          format: double
+          example: 1200.50
+        status:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+
     ErrorResponse:
       type: object
       properties:
         code:
           type: string
-          example: CUSTOMER_NOT_FOUND
+          example: RESOURCE_NOT_FOUND
         message:
           type: string
-          example: Customer not found
+          example: Resource not found
         timestamp:
           type: string
           format: date-time
