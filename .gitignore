@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+
+# Java
+target/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Env
+.env
+.env.local
+.env.*.local
