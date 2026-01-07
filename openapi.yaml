@@ -13,6 +13,8 @@ tags:
     description: Customer management operations
   - name: Accounts
     description: Bank account management
+  - name: Movements
+    description: Account movement operations
 
 paths:
   /api/v1/customers:
@@ -243,6 +245,75 @@ paths:
         '204':
           description: Account closed successfully
 
+  /api/v1/accounts/{accountId}/movements:
+    post:
+      summary: Register a movement for an account
+      operationId: createMovement
+      tags: [Movements]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovementRequest'
+      responses:
+        '201':
+          description: Movement registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovementResponse'
+        '400':
+          description: Invalid movement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: Get all movements for an account
+      operationId: getMovementsByAccount
+      tags: [Movements]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of movements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovementResponse'
+
 components:
   schemas:
     CustomerRequest:
@@ -343,6 +414,51 @@ components:
         status:
           type: boolean
           example: true
+        createdAt:
+          type: string
+          format: date-time
+
+    MovementRequest:
+      type: object
+      required:
+        - type
+        - amount
+      properties:
+        type:
+          type: string
+          enum: [DEBIT, CREDIT]
+          example: DEBIT
+        amount:
+          type: number
+          format: double
+          minimum: 0.01
+          example: 150.75
+        description:
+          type: string
+          example: ATM withdrawal
+
+    MovementResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "m123"
+        accountId:
+          type: string
+          example: "a123"
+        type:
+          type: string
+          example: DEBIT
+        amount:
+          type: number
+          format: double
+          example: 150.75
+        balanceAfter:
+          type: number
+          format: double
+          example: 1049.25
+        description:
+          type: string
         createdAt:
           type: string
           format: date-time
