@@ -13,7 +13,7 @@ public class Movement {
     private final MovementAmount amount;
     private final LocalDateTime date;
 
-    public Movement(
+    private Movement(
             UUID id,
             AccountId accountId,
             MovementType type,
@@ -27,7 +27,7 @@ public class Movement {
         this.date = date;
     }
 
-    public static Movement createDeposit(AccountId accountId, MovementAmount amount) {
+    public static Movement deposit(AccountId accountId, MovementAmount amount) {
         return new Movement(
                 UUID.randomUUID(),
                 accountId,
@@ -37,7 +37,7 @@ public class Movement {
         );
     }
 
-    public static Movement createWithdrawal(AccountId accountId, MovementAmount amount) {
+    public static Movement withdrawal(AccountId accountId, MovementAmount amount) {
         return new Movement(
                 UUID.randomUUID(),
                 accountId,
@@ -47,9 +47,19 @@ public class Movement {
         );
     }
 
-    public UUID getId() { return id; }
-    public AccountId getAccountId() { return accountId; }
-    public MovementType getType() { return type; }
-    public MovementAmount getAmount() { return amount; }
-    public LocalDateTime getDate() { return date; }
+    public boolean isDeposit() {
+        return type == MovementType.DEPOSIT;
+    }
+
+    public boolean isWithdrawal() {
+        return type == MovementType.WITHDRAWAL;
+    }
+
+    public MovementAmount getAmount() {
+        return amount;
+    }
+
+    public MovementType getType() {
+        return type;
+    }
 }

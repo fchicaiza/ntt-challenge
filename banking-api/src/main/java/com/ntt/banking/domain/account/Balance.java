@@ -7,7 +7,7 @@ public class Balance {
 
     private final BigDecimal amount;
 
-    public Balance(BigDecimal amount) {
+    private Balance(BigDecimal amount) {
         Objects.requireNonNull(amount);
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Balance cannot be negative");
@@ -19,19 +19,23 @@ public class Balance {
         return new Balance(BigDecimal.ZERO);
     }
 
+    public static Balance of(BigDecimal amount) {
+        return new Balance(amount);
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
     public Balance add(BigDecimal value) {
         return new Balance(this.amount.add(value));
     }
 
     public Balance subtract(BigDecimal value) {
-        BigDecimal result = this.amount.subtract(value);
-        if (result.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalStateException("Insufficient funds");
-        }
-        return new Balance(result);
+        return new Balance(this.amount.subtract(value));
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public boolean isLessThan(BigDecimal value) {
+        return this.amount.compareTo(value) < 0;
     }
 }
