@@ -1,6 +1,7 @@
 package com.ntt.banking.domain.account;
 
 import com.ntt.banking.domain.customer.CustomerId;
+import com.ntt.banking.domain.movement.Movement;
 
 import java.util.Objects;
 
@@ -36,12 +37,25 @@ public class Account {
         );
     }
 
-    public void deposit(Balance newBalance) {
-        this.balance = newBalance;
-    }
+    /**
+     * Apply a movement to the account enforcing business rules (F2, F3)
+     */
+    public void apply(Movement movement) {
 
-    public void withdraw(Balance newBalance) {
-        this.balance = newBalance;
+        Objects.requireNonNull(movement);
+
+        if (movement.isWithdrawal() &&
+                balance.isLessThan(movement.getAmount().getValue())) {
+            throw new InsufficientBalanceException();
+        }
+
+        if (movement.isDeposit()) {
+            this.balance = balance.add(movement.getAmount().getValue());
+        }
+
+        if (movement.isWithdrawal()) {
+            this.balance = balance.subtract(movement.getAmount().getValue());
+        }
     }
 
     public AccountId getId() { return id; }

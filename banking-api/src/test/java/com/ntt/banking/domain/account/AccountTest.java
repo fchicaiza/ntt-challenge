@@ -9,13 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountTest {
 
     @Test
-    void shouldOpenAccountWithZeroBalance() {
-        Account account = Account.open(
-            new CustomerId(UUID.randomUUID()),
-            AccountType.SAVINGS
-        );
+void shouldOpenAccountWithZeroBalance() {
+    Account account = Account.open(
+        new CustomerId(UUID.randomUUID()),
+        AccountType.SAVINGS
+    );
 
-        // Uso de BigDecimal.ZERO es correcto y profesional
-        assertEquals(BigDecimal.ZERO, account.getBalance().getAmount());
-    }
+    assertEquals(BigDecimal.ZERO, account.getBalance().getAmount());
+}
 }

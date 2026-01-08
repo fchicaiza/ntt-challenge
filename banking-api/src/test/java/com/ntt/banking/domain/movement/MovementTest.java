@@ -10,13 +10,15 @@ import org.junit.jupiter.api.Test;
 import com.ntt.banking.domain.account.AccountId;
 
 public class MovementTest {
+
     @Test
     void shouldCreateDepositMovement() {
-        Movement movement = Movement.createDeposit(
+
+        Movement movement = Movement.deposit(
                 new AccountId(UUID.randomUUID()),
-                new MovementAmount(BigDecimal.TEN));
+                new MovementAmount(BigDecimal.TEN)
+        );
 
         assertEquals(MovementType.DEPOSIT, movement.getType());
     }
-
 }
