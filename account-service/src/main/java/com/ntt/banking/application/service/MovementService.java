@@ -21,6 +21,7 @@ public class MovementService {
 
     private final MovementRepositoryPort movementRepository;
     private final AccountRepositoryPort accountRepository;
+    private final com.ntt.banking.infrastructure.messaging.MovementEventPublisher eventPublisher;
 
     @Transactional
     public Mono<Movement> createMovement(String accountId, Movement movement) {
@@ -62,7 +63,20 @@ public class MovementService {
                     movement.getDescription(),
                     accountId);
 
-            return movementRepository.save(movementToSave);
+            Movement savedMovement = movementRepository.save(movementToSave);
+
+            // Publish Event
+            eventPublisher.publishMovementCreated(com.ntt.banking.application.dto.MovementEvent.builder()
+                    .id(savedMovement.getId())
+                    .accountId(savedMovement.getAccountId())
+                    .type(savedMovement.getType())
+                    .amount(savedMovement.getAmount())
+                    .balanceAfter(savedMovement.getBalance())
+                    .description(savedMovement.getDescription())
+                    .dateTime(savedMovement.getDateTime())
+                    .build());
+
+            return savedMovement;
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
