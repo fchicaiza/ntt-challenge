@@ -15,6 +15,8 @@ tags:
     description: Bank account management
   - name: Movements
     description: Account movement operations
+  - name: Reports
+    description: Reporting operations
 
 paths:
   /api/v1/customers:
@@ -314,6 +316,37 @@ paths:
                 items:
                   $ref: '#/components/schemas/MovementResponse'
 
+  /api/v1/reports:
+    get:
+      summary: Get account statement report for a customer
+      operationId: getReport
+      tags: [Reports]
+      parameters:
+        - name: customerId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Account statement report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+
 components:
   schemas:
     CustomerRequest:
@@ -481,3 +514,33 @@ components:
         timestamp:
           type: string
           format: date-time
+
+    ReportResponse:
+      type: object
+      properties:
+        customerName:
+          type: string
+        reportDateRange:
+          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountReportResponse'
+
+    AccountReportResponse:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+        accountType:
+          type: string
+        initialBalance:
+          type: number
+        currentBalance:
+          type: number
+        status:
+          type: boolean
+        movements:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovementResponse'
