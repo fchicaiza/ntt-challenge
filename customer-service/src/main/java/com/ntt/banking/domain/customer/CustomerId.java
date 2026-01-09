@@ -8,6 +8,10 @@ public record CustomerId(UUID value) {
         return new CustomerId(UUID.randomUUID());
     }
 
+    public UUID getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         return value.toString();

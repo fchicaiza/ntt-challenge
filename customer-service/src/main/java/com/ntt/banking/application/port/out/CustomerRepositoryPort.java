@@ -11,4 +11,6 @@ public interface CustomerRepositoryPort {
     Optional<Customer> findById(CustomerId id);
 
     Optional<Customer> findByIdentification(String identification);
+
+    void deleteById(CustomerId id);
 }

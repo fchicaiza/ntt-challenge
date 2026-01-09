@@ -9,6 +9,7 @@ public class Customer {
     private final String identification;
     private String address;
     private String phone;
+    private String password;
     private boolean active;
 
     public Customer(
@@ -18,6 +19,7 @@ public class Customer {
             String identification,
             String address,
             String phone,
+            String password,
             boolean active) {
         this.id = Objects.requireNonNull(id);
         this.name = name;
@@ -25,6 +27,7 @@ public class Customer {
         this.identification = identification;
         this.address = address;
         this.phone = phone;
+        this.password = password;
         this.active = active;
     }
 
@@ -33,7 +36,8 @@ public class Customer {
             String gender,
             String identification,
             String address,
-            String phone) {
+            String phone,
+            String password) {
         return new Customer(
                 CustomerId.generate(),
                 name,
@@ -41,6 +45,7 @@ public class Customer {
                 identification,
                 address,
                 phone,
+                password,
                 true);
     }
 
@@ -48,9 +53,12 @@ public class Customer {
         this.active = false;
     }
 
-    public void updateContact(String address, String phone) {
+    public void update(String name, String gender, String address, String phone, String password) {
+        this.name = name;
+        this.gender = gender;
         this.address = address;
         this.phone = phone;
+        this.password = password;
     }
 
     // getters
@@ -76,6 +84,10 @@ public class Customer {
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public boolean isActive() {
