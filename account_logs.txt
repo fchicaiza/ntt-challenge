@@ -1,0 +1,27 @@
+account-service-1  | 
+account-service-1  |   .   ____          _            __ _ _
+account-service-1  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+account-service-1  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+account-service-1  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+account-service-1  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+account-service-1  |  =========|_|==============|___/=/_/_/_/
+account-service-1  |  :: Spring Boot ::                (v3.1.3)
+account-service-1  | 
+account-service-1  | 2026-01-09T03:13:31.740Z  INFO 1 --- [           main] c.ntt.banking.AccountServiceApplication  : Starting AccountServiceApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 1 (/app/app.jar started by root in /app)
+account-service-1  | 2026-01-09T03:13:31.751Z  INFO 1 --- [           main] c.ntt.banking.AccountServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+account-service-1  | 2026-01-09T03:13:35.234Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+account-service-1  | 2026-01-09T03:13:35.842Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 567 ms. Found 2 JPA repository interfaces.
+account-service-1  | 2026-01-09T03:13:38.197Z  INFO 1 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+account-service-1  | 2026-01-09T03:13:38.355Z  INFO 1 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.2.7.Final
+account-service-1  | 2026-01-09T03:13:38.361Z  INFO 1 --- [           main] org.hibernate.cfg.Environment            : HHH000406: Using bytecode reflection optimizer
+account-service-1  | 2026-01-09T03:13:38.880Z  INFO 1 --- [           main] o.h.b.i.BytecodeProviderInitiator        : HHH000021: Bytecode provider name : bytebuddy
+account-service-1  | 2026-01-09T03:13:39.290Z  INFO 1 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+account-service-1  | 2026-01-09T03:13:39.330Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+account-service-1  | 2026-01-09T03:13:40.078Z  INFO 1 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:accountdb user=SA
+account-service-1  | 2026-01-09T03:13:40.114Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+account-service-1  | 2026-01-09T03:13:40.949Z  INFO 1 --- [           main] o.h.b.i.BytecodeProviderInitiator        : HHH000021: Bytecode provider name : bytebuddy
+account-service-1  | 2026-01-09T03:13:42.841Z  INFO 1 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+account-service-1  | 2026-01-09T03:13:43.023Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+account-service-1  | 2026-01-09T03:13:46.546Z  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8081
+account-service-1  | 2026-01-09T03:13:46.565Z  INFO 1 --- [           main] c.ntt.banking.AccountServiceApplication  : Started AccountServiceApplication in 16.526 seconds (process running for 18.931)
+account-service-1  | 2026-01-09T03:14:10.830Z  INFO 1 --- [oundedElastic-1] c.n.b.a.service.AccountService           : Creating account: 478758

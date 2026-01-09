@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@org.springframework.stereotype.Service
 @RequiredArgsConstructor
 public class CreateCustomerUseCase {
 
@@ -18,8 +19,7 @@ public class CreateCustomerUseCase {
         customerRepository.findByIdentification(customer.getIdentification())
                 .ifPresent(existing -> {
                     throw new CustomerAlreadyExistsException(
-                            customer.getIdentification()
-                    );
+                            customer.getIdentification());
                 });
 
         Customer saved = customerRepository.save(customer);

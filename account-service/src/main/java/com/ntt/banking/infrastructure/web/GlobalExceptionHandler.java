@@ -10,10 +10,12 @@ import reactor.core.publisher.Mono;
 import java.time.OffsetDateTime;
 
 @RestControllerAdvice
+@lombok.extern.slf4j.Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
+    public Mono<ResponseEntity<ErrorResponse>> handleRuntimeException(RuntimeException ex) {
+        log.error("Unhandled exception: ", ex);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         String message = ex.getMessage();
 
@@ -27,14 +29,17 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(message);
-        return ResponseEntity.status(status).body(errorResponse);
+        errorResponse.setTimestamp(OffsetDateTime.now());
+        return Mono.just(ResponseEntity.status(status).body(errorResponse));
     }
 
     @ExceptionHandler(com.ntt.banking.domain.exception.MovementException.class)
-    public ResponseEntity<ErrorResponse> handleMovementException(
+    public Mono<ResponseEntity<ErrorResponse>> handleMovementException(
             com.ntt.banking.domain.exception.MovementException ex) {
+        log.warn("Movement logic error: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        errorResponse.setTimestamp(OffsetDateTime.now());
+        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse));
     }
 }

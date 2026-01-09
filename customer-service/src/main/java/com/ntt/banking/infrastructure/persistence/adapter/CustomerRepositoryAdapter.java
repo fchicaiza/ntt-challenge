@@ -35,6 +35,18 @@ public class CustomerRepositoryAdapter implements CustomerRepositoryPort {
                 .map(this::mapToDomain);
     }
 
+    @Override
+    public java.util.List<Customer> findAll() {
+        return jpaCustomerRepository.findAll().stream()
+                .map(this::mapToDomain)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public void delete(CustomerId id) {
+        jpaCustomerRepository.deleteById(id.value());
+    }
+
     private CustomerEntity mapToEntity(Customer customer) {
         return CustomerEntity.builder()
                 .customerId(customer.getId().value())
