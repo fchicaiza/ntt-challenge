@@ -67,6 +67,11 @@
             <artifactId>swagger-annotations</artifactId>
             <version>2.2.15</version>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>2.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -95,6 +100,7 @@
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <reactive>true</reactive>
+                                <useTags>true</useTags>
                             </configOptions>
                         </configuration>
                     </execution>
