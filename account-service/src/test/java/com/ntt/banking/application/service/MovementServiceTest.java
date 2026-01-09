@@ -93,4 +93,33 @@ class MovementServiceTest {
                                 .expectError(InsufficientBalanceException.class)
                                 .verify();
         }
+
+        @Test
+        void shouldThrowExceptionWhenAmountIsZero() {
+                Account account = new Account("1", "478758", "Ahorro", BigDecimal.valueOf(100), BigDecimal.valueOf(100),
+                                true, "1");
+                Movement movementReq = Movement.create("CREDIT", BigDecimal.ZERO, BigDecimal.ZERO, "Zero deposit", "1");
+
+                when(accountRepository.findById("1")).thenReturn(Optional.of(account));
+
+                StepVerifier.create(movementService.createMovement("1", movementReq))
+                                .expectErrorMatches(throwable -> throwable instanceof RuntimeException
+                                                && throwable.getMessage().equals("Amount must be greater than zero"))
+                                .verify();
+        }
+
+        @Test
+        void shouldThrowExceptionWhenAmountIsNegative() {
+                Account account = new Account("1", "478758", "Ahorro", BigDecimal.valueOf(100), BigDecimal.valueOf(100),
+                                true, "1");
+                Movement movementReq = Movement.create("CREDIT", BigDecimal.valueOf(-10), BigDecimal.ZERO,
+                                "Negative deposit", "1");
+
+                when(accountRepository.findById("1")).thenReturn(Optional.of(account));
+
+                StepVerifier.create(movementService.createMovement("1", movementReq))
+                                .expectErrorMatches(throwable -> throwable instanceof RuntimeException
+                                                && throwable.getMessage().equals("Amount must be greater than zero"))
+                                .verify();
+        }
 }
