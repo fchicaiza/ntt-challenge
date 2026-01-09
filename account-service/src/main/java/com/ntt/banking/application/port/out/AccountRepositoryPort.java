@@ -7,7 +7,13 @@ import java.util.Optional;
 
 public interface AccountRepositoryPort {
 
-    void save(Account account);
+    Account save(Account account);
 
-    Optional<Account> findById(AccountId accountId);
+    Optional<Account> findById(String id);
+
+    Optional<Account> findByAccountNumber(String accountNumber);
+
+    java.util.List<Account> findByCustomerId(String customerId);
+
+    void deleteById(String id);
 }
