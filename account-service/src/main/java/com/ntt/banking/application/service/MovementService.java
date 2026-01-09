@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class MovementService {
 
     private final MovementRepositoryPort movementRepository;
@@ -25,6 +26,8 @@ public class MovementService {
 
     @Transactional
     public Mono<Movement> createMovement(String accountId, Movement movement) {
+        log.info("Processing movement creation for account: {} - Type: {}, Amount: {}", accountId, movement.getType(),
+                movement.getAmount());
         return Mono.fromCallable(() -> {
             Account account = accountRepository.findById(accountId)
                     .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -89,5 +92,32 @@ public class MovementService {
 
     public Flux<Movement> getMovementsByAccountAndDate(String accountId, LocalDateTime start, LocalDateTime end) {
         return movementRepository.findByAccountIdAndDateBetween(accountId, start, end);
+    }
+
+    @Transactional
+    public Mono<Movement> updateMovement(String movementId, String description) {
+        log.info("Updating movement description for ID: {}", movementId);
+        return Mono.fromCallable(() -> {
+            Movement movement = movementRepository.findById(movementId)
+                    .orElseThrow(() -> new RuntimeException("Movement not found"));
+
+            Movement updatedMovement = new Movement(
+                    movement.getId(),
+                    movement.getDateTime(),
+                    movement.getType(),
+                    movement.getAmount(),
+                    movement.getBalance(),
+                    description,
+                    movement.getAccountId());
+            return movementRepository.save(updatedMovement);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Transactional
+    public Mono<Void> deleteMovement(String movementId) {
+        log.info("Deleting movement with ID: {}", movementId);
+        return Mono.fromRunnable(() -> {
+            movementRepository.delete(movementId);
+        }).subscribeOn(Schedulers.boundedElastic()).then();
     }
 }

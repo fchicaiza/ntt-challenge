@@ -316,14 +316,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/MovementResponse'
 
-  /api/v1/reports:
+  /api/v1/reports/{clientId}:
     get:
       summary: Get account statement report for a customer
       operationId: getReport
       tags: [Reports]
       parameters:
-        - name: customerId
-          in: query
+        - name: clientId
+          in: path
           required: true
           schema:
             type: string
@@ -346,6 +346,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReportResponse'
+
+  /api/v1/movements/{movementId}:
+    put:
+      summary: Update movement description
+      operationId: updateMovement
+      tags: [Movements]
+      parameters:
+        - name: movementId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Movement updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovementResponse'
+    
+    delete:
+      summary: Delete movement
+      operationId: deleteMovement
+      tags: [Movements]
+      parameters:
+        - name: movementId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Movement deleted
 
 components:
   schemas:

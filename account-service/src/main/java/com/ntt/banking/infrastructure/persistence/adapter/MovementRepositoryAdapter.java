@@ -61,4 +61,14 @@ public class MovementRepositoryAdapter implements MovementRepositoryPort {
                 entity.getDescription(),
                 entity.getAccountId());
     }
+
+    @Override
+    public java.util.Optional<Movement> findById(String movementId) {
+        return jpaMovementRepository.findById(UUID.fromString(movementId)).map(this::mapToDomain);
+    }
+
+    @Override
+    public void delete(String movementId) {
+        jpaMovementRepository.deleteById(UUID.fromString(movementId));
+    }
 }

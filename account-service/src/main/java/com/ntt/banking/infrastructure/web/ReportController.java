@@ -19,11 +19,11 @@ public class ReportController implements ReportsApi {
 
     @Override
     public Mono<ResponseEntity<ReportResponse>> getReport(
-            String customerId,
+            String clientId,
             LocalDate startDate,
             LocalDate endDate,
             ServerWebExchange exchange) {
-        return reportService.generateReport(customerId, startDate, endDate)
+        return reportService.generateReport(clientId, startDate, endDate)
                 .map(ResponseEntity::ok);
     }
 }
