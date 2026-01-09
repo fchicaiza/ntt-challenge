@@ -30,6 +30,9 @@ public class MovementService {
                     .orElseThrow(() -> new RuntimeException("Account not found"));
 
             BigDecimal amount = movement.getAmount();
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new RuntimeException("Amount must be greater than zero");
+            }
             BigDecimal currentBalance = account.getBalance();
             BigDecimal newBalance;
 
