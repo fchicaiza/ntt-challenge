@@ -31,7 +31,8 @@ class AccountServiceTest {
 
     @Test
     void shouldCreateAccount() {
-        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), true, "1");
+        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), true,
+                "1");
 
         when(accountRepository.findByAccountNumber(anyString())).thenReturn(Optional.empty());
         when(accountRepository.save(any(Account.class))).thenReturn(account);
@@ -43,7 +44,8 @@ class AccountServiceTest {
 
     @Test
     void shouldGetAccountById() {
-        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), true, "1");
+        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), true,
+                "1");
         when(accountRepository.findById("1")).thenReturn(Optional.of(account));
 
         StepVerifier.create(accountService.getAccountById("1"))
@@ -53,8 +55,10 @@ class AccountServiceTest {
 
     @Test
     void shouldUpdateAccount() {
-        Account existing = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), true, "cust-1");
-        Account updated = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), false, "cust-1");
+        Account existing = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), true,
+                "cust-1");
+        Account updated = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), false,
+                "cust-1");
 
         when(accountRepository.findById("1")).thenReturn(Optional.of(existing));
         when(accountRepository.save(any(Account.class))).thenReturn(updated);
@@ -66,8 +70,10 @@ class AccountServiceTest {
 
     @Test
     void shouldGetAccountsByCustomer() {
-        Account account1 = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), true, "cust-1");
-        Account account2 = new Account("2", "225487", "Corriente", BigDecimal.valueOf(500), true, "cust-1");
+        Account account1 = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), true,
+                "cust-1");
+        Account account2 = new Account("2", "225487", "Corriente", BigDecimal.valueOf(500), BigDecimal.valueOf(500),
+                true, "cust-1");
 
         when(accountRepository.findByCustomerId("cust-1")).thenReturn(java.util.List.of(account1, account2));
 
