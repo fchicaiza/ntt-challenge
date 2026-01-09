@@ -20,66 +20,77 @@ import static org.mockito.Mockito.when;
 
 class MovementServiceTest {
 
-    @Mock
-    private MovementRepositoryPort movementRepository;
+        @Mock
+        private MovementRepositoryPort movementRepository;
 
-    @Mock
-    private AccountRepositoryPort accountRepository;
+        @Mock
+        private AccountRepositoryPort accountRepository;
 
-    @InjectMocks
-    private MovementService movementService;
+        @Mock
+        private com.ntt.banking.infrastructure.messaging.MovementEventPublisher eventPublisher;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+        @InjectMocks
+        private MovementService movementService;
 
-    @Test
-    void shouldCreateCreditMovement() {
-        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), true,
-                "1");
-        Movement movementReq = Movement.create("CREDIT", BigDecimal.valueOf(50), BigDecimal.ZERO, "Deposit", "1");
-        Movement movementSaved = new Movement("m1", java.time.LocalDateTime.now(), "CREDIT", BigDecimal.valueOf(50),
-                BigDecimal.valueOf(150),
-                "Deposit", "1");
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+        }
 
-        when(accountRepository.findById("1")).thenReturn(Optional.of(account));
-        when(accountRepository.save(any(Account.class))).thenReturn(account);
-        when(movementRepository.save(any(Movement.class))).thenReturn(movementSaved);
+        @Test
+        void shouldCreateCreditMovement() {
+                Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100),
+                                BigDecimal.valueOf(100), true,
+                                "1");
+                Movement movementReq = Movement.create("CREDIT", BigDecimal.valueOf(50), BigDecimal.ZERO, "Deposit",
+                                "1");
+                Movement movementSaved = new Movement("m1", java.time.LocalDateTime.now(), "CREDIT",
+                                BigDecimal.valueOf(50),
+                                BigDecimal.valueOf(150),
+                                "Deposit", "1");
 
-        StepVerifier.create(movementService.createMovement("1", movementReq))
-                .expectNext(movementSaved)
-                .verifyComplete();
-    }
+                when(accountRepository.findById("1")).thenReturn(Optional.of(account));
+                when(accountRepository.save(any(Account.class))).thenReturn(account);
+                when(movementRepository.save(any(Movement.class))).thenReturn(movementSaved);
 
-    @Test
-    void shouldCreateDebitMovement() {
-        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(100), true,
-                "1");
-        Movement movementReq = Movement.create("DEBIT", BigDecimal.valueOf(50), BigDecimal.ZERO, "Withdrawal", "1");
-        Movement movementSaved = new Movement("m1", java.time.LocalDateTime.now(), "DEBIT", BigDecimal.valueOf(50),
-                BigDecimal.valueOf(50),
-                "Withdrawal", "1");
+                StepVerifier.create(movementService.createMovement("1", movementReq))
+                                .expectNext(movementSaved)
+                                .verifyComplete();
+        }
 
-        when(accountRepository.findById("1")).thenReturn(Optional.of(account));
-        when(accountRepository.save(any(Account.class))).thenReturn(account);
-        when(movementRepository.save(any(Movement.class))).thenReturn(movementSaved);
+        @Test
+        void shouldCreateDebitMovement() {
+                Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100),
+                                BigDecimal.valueOf(100), true,
+                                "1");
+                Movement movementReq = Movement.create("DEBIT", BigDecimal.valueOf(50), BigDecimal.ZERO, "Withdrawal",
+                                "1");
+                Movement movementSaved = new Movement("m1", java.time.LocalDateTime.now(), "DEBIT",
+                                BigDecimal.valueOf(50),
+                                BigDecimal.valueOf(50),
+                                "Withdrawal", "1");
 
-        StepVerifier.create(movementService.createMovement("1", movementReq))
-                .expectNext(movementSaved)
-                .verifyComplete();
-    }
+                when(accountRepository.findById("1")).thenReturn(Optional.of(account));
+                when(accountRepository.save(any(Account.class))).thenReturn(account);
+                when(movementRepository.save(any(Movement.class))).thenReturn(movementSaved);
 
-    @Test
-    void shouldThrowInsufficientBalanceException() {
-        Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(40), true,
-                "1");
-        Movement movementReq = Movement.create("DEBIT", BigDecimal.valueOf(50), BigDecimal.ZERO, "Withdrawal", "1");
+                StepVerifier.create(movementService.createMovement("1", movementReq))
+                                .expectNext(movementSaved)
+                                .verifyComplete();
+        }
 
-        when(accountRepository.findById("1")).thenReturn(Optional.of(account));
+        @Test
+        void shouldThrowInsufficientBalanceException() {
+                Account account = new Account("1", "478758", "Ahorros", BigDecimal.valueOf(100), BigDecimal.valueOf(40),
+                                true,
+                                "1");
+                Movement movementReq = Movement.create("DEBIT", BigDecimal.valueOf(50), BigDecimal.ZERO, "Withdrawal",
+                                "1");
 
-        StepVerifier.create(movementService.createMovement("1", movementReq))
-                .expectError(InsufficientBalanceException.class)
-                .verify();
-    }
+                when(accountRepository.findById("1")).thenReturn(Optional.of(account));
+
+                StepVerifier.create(movementService.createMovement("1", movementReq))
+                                .expectError(InsufficientBalanceException.class)
+                                .verify();
+        }
 }
