@@ -37,8 +37,7 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
                         new AccountId(entity.getId()),
                         new CustomerId(entity.getCustomerId()),
                         AccountType.valueOf(entity.getType()),
-                        new Balance(entity.getBalance()),
-                        entity.isActive()
-                ));
+                        Balance.of(entity.getBalance()),
+                        entity.isActive()));
     }
 }
