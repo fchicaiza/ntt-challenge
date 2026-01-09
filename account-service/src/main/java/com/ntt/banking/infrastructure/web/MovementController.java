@@ -36,6 +36,21 @@ public class MovementController implements MovementsApi {
     }
 
     @Override
+    public Mono<ResponseEntity<MovementResponse>> updateMovement(String movementId,
+            Mono<com.ntt.banking.model.UpdateMovementRequest> updateMovementRequest, ServerWebExchange exchange) {
+        return updateMovementRequest
+                .flatMap(req -> movementService.updateMovement(movementId, req.getDescription()))
+                .map(this::mapToResponse)
+                .map(ResponseEntity::ok);
+    }
+
+    @Override
+    public Mono<ResponseEntity<Void>> deleteMovement(String movementId, ServerWebExchange exchange) {
+        return movementService.deleteMovement(movementId)
+                .then(Mono.just(ResponseEntity.noContent().build()));
+    }
+
+    @Override
     public Mono<ResponseEntity<Flux<MovementResponse>>> getMovementsByAccount(String accountId, LocalDate fromDate,
             LocalDate toDate, ServerWebExchange exchange) {
         Flux<Movement> movementFlux;

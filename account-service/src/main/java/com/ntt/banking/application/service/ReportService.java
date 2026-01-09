@@ -19,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class ReportService {
 
     private final AccountService accountService;
@@ -26,6 +27,7 @@ public class ReportService {
     private final WebClient customerWebClient;
 
     public Mono<ReportResponse> generateReport(String customerId, LocalDate startDate, LocalDate endDate) {
+        log.info("Generating statement report for customer: {} between {} and {}", customerId, startDate, endDate);
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 

@@ -36,11 +36,13 @@ public class AccountService {
     }
 
     public Mono<Account> getAccountById(String id) {
+        log.info("Fetching account by ID: {}", id);
         return Mono.fromCallable(() -> accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"))).subscribeOn(Schedulers.boundedElastic());
     }
 
     public Mono<Account> updateAccount(String id, Account account) {
+        log.info("Updating account balance for ID: {}", id);
         return Mono.fromCallable(() -> {
             return accountRepository.findById(id)
                     .map(existing -> {
@@ -58,6 +60,7 @@ public class AccountService {
     }
 
     public Mono<Void> deleteAccount(String id) {
+        log.info("Deleting account ID: {}", id);
         return Mono.fromRunnable(() -> {
             accountRepository.deleteById(id);
         }).subscribeOn(Schedulers.boundedElastic()).then();
