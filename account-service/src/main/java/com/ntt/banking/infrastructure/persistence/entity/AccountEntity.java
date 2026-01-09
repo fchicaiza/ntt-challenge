@@ -1,32 +1,40 @@
 package com.ntt.banking.infrastructure.persistence.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
 @Table(name = "accounts")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class AccountEntity {
 
     @Id
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID customerId;
+    @Column(name = "account_number", unique = true, nullable = false)
+    private String accountNumber;
 
-    @Column(nullable = false)
-    private String type;
+    @Column(name = "account_type", nullable = false)
+    private String accountType;
 
-    @Column(nullable = false)
-    private BigDecimal balance;
+    @Column(name = "initial_balance", nullable = false)
+    private BigDecimal initialBalance;
 
-    @Column(nullable = false)
-    private boolean active;
+    @Column(name = "status", nullable = false)
+    private Boolean status;
+
+    @Column(name = "customer_id", nullable = false)
+    private String customerId;
 }

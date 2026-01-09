@@ -1,66 +1,53 @@
 package com.ntt.banking.domain.account;
 
-import com.ntt.banking.domain.customer.CustomerId;
-import com.ntt.banking.domain.movement.Movement;
-
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Account {
 
-    private final AccountId id;
-    private final CustomerId customerId;
-    private final AccountType type;
-    private Balance balance;
-    private boolean active;
+    private final String id;
+    private final String accountNumber;
+    private final String accountType;
+    private final BigDecimal initialBalance;
+    private final Boolean active;
+    private final String customerId;
 
     public Account(
-            AccountId id,
-            CustomerId customerId,
-            AccountType type,
-            Balance balance,
-            boolean active
-    ) {
-        this.id = Objects.requireNonNull(id);
-        this.customerId = Objects.requireNonNull(customerId);
-        this.type = Objects.requireNonNull(type);
-        this.balance = Objects.requireNonNull(balance);
+            String id,
+            String accountNumber,
+            String accountType,
+            BigDecimal initialBalance,
+            Boolean active,
+            String customerId) {
+        this.id = id;
+        this.accountNumber = accountNumber;
+        this.accountType = accountType;
+        this.initialBalance = initialBalance;
         this.active = active;
+        this.customerId = customerId;
     }
 
-    public static Account open(CustomerId customerId, AccountType type) {
-        return new Account(
-                AccountId.generate(),
-                customerId,
-                type,
-                Balance.zero(),
-                true
-        );
+    public String getId() {
+        return id;
     }
 
-    /**
-     * Apply a movement to the account enforcing business rules (F2, F3)
-     */
-    public void apply(Movement movement) {
-
-        Objects.requireNonNull(movement);
-
-        if (movement.isWithdrawal() &&
-                balance.isLessThan(movement.getAmount().getValue())) {
-            throw new InsufficientBalanceException();
-        }
-
-        if (movement.isDeposit()) {
-            this.balance = balance.add(movement.getAmount().getValue());
-        }
-
-        if (movement.isWithdrawal()) {
-            this.balance = balance.subtract(movement.getAmount().getValue());
-        }
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public AccountId getId() { return id; }
-    public CustomerId getCustomerId() { return customerId; }
-    public AccountType getType() { return type; }
-    public Balance getBalance() { return balance; }
-    public boolean isActive() { return active; }
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public BigDecimal getInitialBalance() {
+        return initialBalance;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
 }
