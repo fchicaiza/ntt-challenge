@@ -13,8 +13,8 @@ class CustomerTest {
                 "M",
                 "1712345678",
                 "Otavalo",
-                "098254785"
-        );
+                "098254785",
+                "1234");
 
         assertTrue(customer.isActive());
         assertNotNull(customer.getId());

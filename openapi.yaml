@@ -380,6 +380,9 @@ components:
           type: string
           enum: [SAVINGS, CHECKING]
           example: SAVINGS
+        accountNumber:
+          type: string
+          example: "478758"
         initialBalance:
           type: number
           format: double
@@ -401,6 +404,9 @@ components:
         id:
           type: string
           example: "a123"
+        accountNumber:
+          type: string
+          example: "478758"
         customerId:
           type: string
           example: "c123"

@@ -95,6 +95,7 @@
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <reactive>true</reactive>
+                                <useTags>true</useTags>
                             </configOptions>
                         </configuration>
                     </execution>
