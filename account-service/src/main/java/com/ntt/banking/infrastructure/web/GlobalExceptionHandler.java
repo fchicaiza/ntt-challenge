@@ -13,21 +13,28 @@ import java.time.OffsetDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleRuntimeException(RuntimeException ex) {
-        ErrorResponse error = new ErrorResponse();
-        error.setCode("INTERNAL_SERVER_ERROR");
-        error.setMessage(ex.getMessage());
-        error.setTimestamp(OffsetDateTime.now());
-
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (ex.getMessage().contains("not found")) {
-            status = HttpStatus.NOT_FOUND;
-            error.setCode("RESOURCE_NOT_FOUND");
-        } else if (ex.getMessage().contains("already exists")) {
-            status = HttpStatus.CONFLICT;
-            error.setCode("RESOURCE_ALREADY_EXISTS");
+        String message = ex.getMessage();
+
+        if (message != null) {
+            if (message.contains("not found")) {
+                status = HttpStatus.NOT_FOUND;
+            } else if (message.contains("already exists")) {
+                status = HttpStatus.CONFLICT;
+            }
         }
 
-        return Mono.just(ResponseEntity.status(status).body(error));
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(message);
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @ExceptionHandler(com.ntt.banking.domain.exception.MovementException.class)
+    public ResponseEntity<ErrorResponse> handleMovementException(
+            com.ntt.banking.domain.exception.MovementException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

@@ -40,24 +40,20 @@ public class AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"))).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<Account> updateAccount(String id, Account updatedAccount) {
+    public Mono<Account> updateAccount(String id, Account account) {
         return Mono.fromCallable(() -> {
-            Account existing = accountRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Account not found"));
-
-            // Update fields
-            // Assuming Account domain has setters or update methods
-            // Re-creating for immutability often preferred but simplest approach here:
-            Account toSave = new Account(
-                    existing.getId(),
-                    updatedAccount.getAccountNumber(), // Usually not updatable, but follows CRUD
-                    updatedAccount.getAccountType(),
-                    updatedAccount.getInitialBalance(),
-                    updatedAccount.isActive(), // Status
-                    existing.getCustomerId() // Usually customer doesn't change
-            );
-
-            return accountRepository.save(toSave);
+            return accountRepository.findById(id)
+                    .map(existing -> {
+                        Account updated = new Account(
+                                existing.getId(),
+                                existing.getAccountNumber(),
+                                existing.getAccountType(),
+                                existing.getInitialBalance(),
+                                account.getBalance() != null ? account.getBalance() : existing.getBalance(),
+                                account.isActive() != null ? account.isActive() : existing.isActive(),
+                                existing.getCustomerId());
+                        return accountRepository.save(updated);
+                    }).orElseThrow(() -> new RuntimeException("Account not found"));
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

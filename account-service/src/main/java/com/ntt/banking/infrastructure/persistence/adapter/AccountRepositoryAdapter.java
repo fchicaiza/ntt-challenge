@@ -54,20 +54,19 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
                 .initialBalance(account.getInitialBalance())
+                .balance(account.getBalance())
                 .status(account.isActive())
                 .customerId(account.getCustomerId())
                 .build();
     }
 
     private Account mapToDomain(AccountEntity entity) {
-        // Assuming Account domain object matches necessary fields
-        // Since we are creating AccountService from scratch, we might need to adjust
-        // Domain object too
         return new Account(
                 entity.getId().toString(),
                 entity.getAccountNumber(),
                 entity.getAccountType(),
                 entity.getInitialBalance(),
+                entity.getBalance(),
                 entity.getStatus(),
                 entity.getCustomerId());
     }

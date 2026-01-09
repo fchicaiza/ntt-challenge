@@ -9,6 +9,7 @@ public class Account {
     private final String accountNumber;
     private final String accountType;
     private final BigDecimal initialBalance;
+    private final BigDecimal balance;
     private final Boolean active;
     private final String customerId;
 
@@ -17,12 +18,14 @@ public class Account {
             String accountNumber,
             String accountType,
             BigDecimal initialBalance,
+            BigDecimal balance,
             Boolean active,
             String customerId) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.initialBalance = initialBalance;
+        this.balance = balance;
         this.active = active;
         this.customerId = customerId;
     }
@@ -41,6 +44,10 @@ public class Account {
 
     public BigDecimal getInitialBalance() {
         return initialBalance;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
     }
 
     public Boolean isActive() {
