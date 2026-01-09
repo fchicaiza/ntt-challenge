@@ -94,6 +94,7 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipDefaultInterface>true</skipDefaultInterface>
+                                <reactive>true</reactive>
                             </configOptions>
                         </configuration>
                     </execution>
