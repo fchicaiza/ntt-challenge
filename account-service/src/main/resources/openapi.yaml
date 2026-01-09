@@ -1,0 +1,477 @@
+openapi: 3.0.3
+
+info:
+  title: Banking API
+  description: API for customer, account and movement management
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Customers
+    description: Customer management operations
+  - name: Accounts
+    description: Bank account management
+  - name: Movements
+    description: Account movement operations
+
+paths:
+  /api/v1/customers:
+    post:
+      summary: Create a new customer
+      operationId: createCustomer
+      tags: [Customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '201':
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Customer already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: Get all customers
+      operationId: getAllCustomers
+      tags: [Customers]
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerResponse'
+
+  /api/v1/customers/{customerId}:
+    get:
+      summary: Get customer by ID
+      operationId: getCustomerById
+      tags: [Customers]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update customer
+      operationId: updateCustomer
+      tags: [Customers]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '200':
+          description: Customer updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Delete customer
+      operationId: deleteCustomer
+      tags: [Customers]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Customer deleted successfully
+
+  /api/v1/customers/{customerId}/accounts:
+    post:
+      summary: Create a new account for a customer
+      operationId: createAccount
+      tags: [Accounts]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: Get all accounts for a customer
+      operationId: getAccountsByCustomer
+      tags: [Accounts]
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountResponse'
+
+  /api/v1/accounts/{accountId}:
+    get:
+      summary: Get account by ID
+      operationId: getAccountById
+      tags: [Accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Account found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update account status
+      operationId: updateAccount
+      tags: [Accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+      responses:
+        '200':
+          description: Account updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+
+    delete:
+      summary: Close account
+      operationId: deleteAccount
+      tags: [Accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Account closed successfully
+
+  /api/v1/accounts/{accountId}/movements:
+    post:
+      summary: Register a movement for an account
+      operationId: createMovement
+      tags: [Movements]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovementRequest'
+      responses:
+        '201':
+          description: Movement registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovementResponse'
+        '400':
+          description: Invalid movement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: Get all movements for an account
+      operationId: getMovementsByAccount
+      tags: [Movements]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of movements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovementResponse'
+
+components:
+  schemas:
+    CustomerRequest:
+      type: object
+      required:
+        - name
+        - gender
+        - identification
+        - address
+        - phone
+        - password
+        - status
+      properties:
+        name:
+          type: string
+          example: Jose Lema
+        gender:
+          type: string
+          example: M
+        identification:
+          type: string
+          minLength: 5
+          example: 1712345678
+        address:
+          type: string
+          example: Otavalo sn y principal
+        phone:
+          type: string
+          example: 098254785
+        password:
+          type: string
+          minLength: 4
+          example: "1234"
+        status:
+          type: boolean
+          example: true
+
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "c123"
+        name:
+          type: string
+        gender:
+          type: string
+        identification:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        status:
+          type: boolean
+
+    AccountRequest:
+      type: object
+      required:
+        - accountType
+        - initialBalance
+      properties:
+        accountType:
+          type: string
+          enum: [SAVINGS, CHECKING]
+          example: SAVINGS
+        initialBalance:
+          type: number
+          format: double
+          minimum: 0
+          example: 1000.00
+
+    AccountUpdateRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: boolean
+          example: true
+
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "a123"
+        customerId:
+          type: string
+          example: "c123"
+        accountType:
+          type: string
+          example: SAVINGS
+        balance:
+          type: number
+          format: double
+          example: 1200.50
+        status:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+
+    MovementRequest:
+      type: object
+      required:
+        - type
+        - amount
+      properties:
+        type:
+          type: string
+          enum: [DEBIT, CREDIT]
+          example: DEBIT
+        amount:
+          type: number
+          format: double
+          minimum: 0.01
+          example: 150.75
+        description:
+          type: string
+          example: ATM withdrawal
+
+    MovementResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "m123"
+        accountId:
+          type: string
+          example: "a123"
+        type:
+          type: string
+          example: DEBIT
+        amount:
+          type: number
+          format: double
+          example: 150.75
+        balanceAfter:
+          type: number
+          format: double
+          example: 1049.25
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: RESOURCE_NOT_FOUND
+        message:
+          type: string
+          example: Resource not found
+        timestamp:
+          type: string
+          format: date-time
