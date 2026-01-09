@@ -29,7 +29,7 @@ public class MovementController implements MovementsApi {
             Mono<MovementRequest> movementRequest,
             ServerWebExchange exchange) {
         return movementRequest
-                .map(this::mapToDomain)
+                .map(request -> mapToDomain(request, accountId))
                 .flatMap(movement -> movementService.createMovement(accountId, movement))
                 .map(this::mapToResponse)
                 .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
@@ -64,14 +64,13 @@ public class MovementController implements MovementsApi {
         return Mono.just(ResponseEntity.ok(movementFlux.map(this::mapToResponse)));
     }
 
-    private Movement mapToDomain(MovementRequest request) {
+    private Movement mapToDomain(MovementRequest request, String accountId) {
         return Movement.create(
                 request.getType().toString(),
                 BigDecimal.valueOf(request.getAmount()),
                 BigDecimal.ZERO, // Balance calculated in service
                 request.getDescription(),
-                null // AccountId from path
-        );
+                accountId);
     }
 
     private MovementResponse mapToResponse(Movement movement) {

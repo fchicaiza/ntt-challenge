@@ -2,6 +2,9 @@ package com.ntt.banking.infrastructure.web;
 
 import com.ntt.banking.api.CustomersApi;
 import com.ntt.banking.application.usecase.CreateCustomerUseCase;
+import com.ntt.banking.application.usecase.DeleteCustomerUseCase;
+import com.ntt.banking.application.usecase.GetCustomerUseCase;
+import com.ntt.banking.application.usecase.UpdateCustomerUseCase;
 import com.ntt.banking.domain.customer.Customer;
 import com.ntt.banking.domain.customer.CustomerId;
 import com.ntt.banking.model.CustomerRequest;
@@ -21,6 +24,9 @@ import java.util.UUID;
 public class CustomerController implements CustomersApi {
 
     private final CreateCustomerUseCase createCustomerUseCase;
+    private final GetCustomerUseCase getCustomerUseCase;
+    private final UpdateCustomerUseCase updateCustomerUseCase;
+    private final DeleteCustomerUseCase deleteCustomerUseCase;
 
     @Override
     public Mono<ResponseEntity<CustomerResponse>> createCustomer(Mono<CustomerRequest> customerRequest,
@@ -32,29 +38,35 @@ public class CustomerController implements CustomersApi {
                 .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
     }
 
-    // Implementing required methods from CustomersApi
-    // For now placeholders for delete, get, getAll, update since they were F1
-    // requirements
-
     @Override
     public Mono<ResponseEntity<Void>> deleteCustomer(String customerId, ServerWebExchange exchange) {
-        return Mono.just(ResponseEntity.noContent().build());
+        return Mono.fromRunnable(() -> deleteCustomerUseCase.execute(customerId))
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @Override
     public Mono<ResponseEntity<CustomerResponse>> getCustomerById(String customerId, ServerWebExchange exchange) {
-        return Mono.just(ResponseEntity.notFound().build());
+        return Mono.justOrEmpty(getCustomerUseCase.findById(customerId))
+                .map(this::mapToResponse)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @Override
     public Mono<ResponseEntity<Flux<CustomerResponse>>> getAllCustomers(ServerWebExchange exchange) {
-        return Mono.just(ResponseEntity.ok(Flux.empty()));
+        Flux<CustomerResponse> customers = Flux.fromIterable(getCustomerUseCase.findAll())
+                .map(this::mapToResponse);
+        return Mono.just(ResponseEntity.ok(customers));
     }
 
     @Override
     public Mono<ResponseEntity<CustomerResponse>> updateCustomer(String customerId,
             Mono<CustomerRequest> customerRequest, ServerWebExchange exchange) {
-        return Mono.just(ResponseEntity.notFound().build());
+        return customerRequest
+                .map(this::mapToDomain)
+                .map(customer -> updateCustomerUseCase.execute(customerId, customer))
+                .map(this::mapToResponse)
+                .map(ResponseEntity::ok);
     }
 
     private Customer mapToDomain(CustomerRequest request) {

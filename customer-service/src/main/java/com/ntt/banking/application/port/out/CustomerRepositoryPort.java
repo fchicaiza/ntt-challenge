@@ -11,4 +11,8 @@ public interface CustomerRepositoryPort {
     Optional<Customer> findById(CustomerId id);
 
     Optional<Customer> findByIdentification(String identification);
+
+    java.util.List<Customer> findAll();
+
+    void delete(CustomerId id);
 }
