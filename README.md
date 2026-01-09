@@ -1,75 +1,84 @@
-# Banking API – Backend Challenge
+# Sistema de Microservicios Bancarios - Reto Técnico NTT Data
 
-This project implements a banking API following a **contract-first approach**,
-using **OpenAPI 3.0** as the single source of truth.
-
-The system is designed with a strong focus on **clean architecture**,
-**domain-driven design**, and **reactive programming**.
+Este proyecto implementa una solución de backend para la gestión de clientes, cuentas y movimientos bancarios, utilizando una arquitectura de microservicios, programación reactiva y comunicación asincrona.
 
 ---
 
-## Design Principles
+## 🏗️ Arquitectura y Principios de Diseño
 
-- Contract-first API design (OpenAPI)
-- Clean Architecture (domain-centered)
-- Domain-Driven Design (DDD)
-- Reactive programming with Spring WebFlux
-- Clear separation of concerns
-
----
-
-## Domain Model
-
-The core business logic is implemented as a **framework-agnostic domain layer**.
-
-- **Customer**  
-  Represents a bank client and acts as an aggregate root.
-
-- **Account**  
-  Represents a bank account owned by a customer.
-  Balance is protected by domain rules and cannot be negative.
-
-- **Movement**  
-  Represents an immutable financial transaction
-  (deposit or withdrawal) applied to an account.
+El sistema está diseñado bajo los siguientes estándares:
+- **Arquitectura Hexagonal (Clean Architecture)**: Separación estricta entre dominio, aplicación e infraestructura.
+- **Contract-First**: La API se define primero en OpenAPI (`openapi.yaml`) y el código se genera a partir de ella.
+- **Microservicios**:
+  - `customer-service`: Gestión de clientes.
+  - `account-service`: Gestión de cuentas bancarias y transacciones.
+- **Comunicación Asíncrona**: Uso de **RabbitMQ** para el registro de auditoría de movimientos.
+- **Programación Reactiva**: Implementado con **Spring WebFlux** para un manejo eficiente de recursos.
 
 ---
 
-## Business Rules
+## 🛠️ Stack Tecnológico
 
-- Account balance is derived from movements.
-- Movements are immutable and cannot be updated or deleted.
-- Withdrawal movements require sufficient balance.
-- Accounts use a soft-delete approach for closure.
-- Domain logic is isolated from infrastructure and frameworks.
-
----
-
-## Tech Stack
-
-- Java 17
-- Spring Boot 3 (WebFlux)
-- Maven
-- OpenAPI 3
-- Docker
+- **Lenguaje**: Java 17
+- **Framework**: Spring Boot 3.1.3 (WebFlux)
+- **Base de Datos**: H2 (En memoria para cada microservicio)
+- **Mensajería**: RabbitMQ
+- **Contenedores**: Docker & Docker Compose
+- **Documentación**: Swagger UI / OpenAPI 3.0
 
 ---
 
-## API Contract
+## 🚀 Cómo Ejecutar el Proyecto
 
-The API contract is defined in `openapi.yaml` and validated using
-**OpenAPI Generator CLI**.
+La forma más sencilla de levantar todo el ecosistema (Servicios, Base de Datos y RabbitMQ) es mediante Docker Compose:
 
-The Spring Boot project is generated directly from the OpenAPI contract,
-ensuring alignment between API definition and implementation.
+1. Asegúrate de tener instalado **Docker** y **Docker Compose**.
+2. En la raíz del proyecto, ejecuta:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Los servicios estarán disponibles en:
+   - **Customer Service**: http://localhost:8080
+   - **Account Service**: http://localhost:8081
+   - **RabbitMQ Management**: http://localhost:15672 (guest/guest)
 
 ---
 
-## Project Status
+## 📖 Documentación de la API
 
-- [x] OpenAPI contract validated
-- [x] Domain model implemented
-- [ ] Application use cases
-- [ ] Reactive WebFlux controllers
-- [ ] Persistence layer
-- [ ] Dockerization
+### Swagger UI (Interactiva)
+Puedes probar los endpoints directamente desde tu navegador:
+- [Customer Service Swagger](http://localhost:8080/swagger-ui.html)
+- [Account Service Swagger](http://localhost:8081/swagger-ui.html)
+
+### Especificación OpenAPI
+- La especificación completa se encuentra en el archivo raíz: `openapi.yaml`.
+- También disponible dinámicamente en: `http://localhost:8080/v3/api-docs.yaml`
+
+---
+
+## 🧪 Pruebas y Verificación
+
+### Colección de Postman
+Para facilitar las pruebas, se incluye el archivo **`Banking-API.postman_collection.json`** en la raíz. Solo impórtalo en Postman para tener todos los flujos listos (Crear cliente -> Crear cuenta -> Movimientos -> Reportes).
+
+### Script de Base de Datos
+El archivo **`BaseDatos.sql`** contiene el DDL inicial y los datos de prueba del caso de estudio (Jose Lema, Marianela Montalvo, etc.).
+
+### Verificación de Auditoría (RabbitMQ)
+Cada vez que se realiza un movimiento en el `account-service`, se envía un evento a RabbitMQ. El `customer-service` lo consume y lo registra en sus logs. Puedes verificarlo con:
+```bash
+docker compose logs customer-service | grep "AUDIT"
+```
+
+---
+
+## ✅ Cumplimiento de Requerimientos
+
+- [x] **F1**: CRUD de Clientes y Cuentas.
+- [x] **F2**: Registro de movimientos (Débitos/Créditos) con validación de saldo.
+- [x] **F3**: Manejo de excepciones con mensajes personalizados ("Saldo no disponible", etc.).
+- [x] **F4**: Reporte de estado de cuenta por rango de fechas (Integración de servicios).
+- [x] **F5**: Pruebas Unitarias (JUnit/Mockito).
+- [x] **F6**: Pruebas de Integración.
+- [x] **F7**: Despliegue en contenedores (Docker Compose).
