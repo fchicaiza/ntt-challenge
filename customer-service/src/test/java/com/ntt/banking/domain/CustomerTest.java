@@ -1,13 +1,15 @@
-package com.ntt.banking.domain.customer;
+package com.ntt.banking.domain;
 
 import org.junit.jupiter.api.Test;
+
+import com.ntt.banking.domain.customer.Customer;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerTest {
 
     @Test
     void shouldCreateActiveCustomer() {
-        // Asegúrate de que el método .create() en tu clase Customer sea estático
         Customer customer = Customer.create(
                 "Jose Lema",
                 "M",
